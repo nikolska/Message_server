@@ -2,27 +2,82 @@ from clcrypto import hash_password
 
 
 class User:
+    '''
+    A class used to represent a User.
+
+    ...
+
+    Attributes
+    ----------
+    _id : int
+       user ID
+    username : str
+        user name
+    _hashed_password : str
+        user hashed password
+
+
+    Methods
+    -------
+    set_password:
+        Set user password (used hashed function).
+    save_to_db:
+        Save data to database.
+    load_user_by_id:
+        Load user by user ID.
+    load_user_by_username:
+        Load user by user name.
+    load_all_users:
+        Load all users in database.
+    delete:
+        Delete all information about user from database.
+    '''
     def __init__(self, username='', password='', salt=''):
+        '''
+        :param str username: user name
+        :param str password: user password
+        :param str salt: cryptographic salt, default=None
+        '''
         self._id = -1
         self.username = username
         self._hashed_password = hash_password(password, salt)
 
     @property
     def id(self):
+        '''
+        :return: object ID
+        '''
         return self._id
 
     @property
     def hashed_password(self):
+        '''
+        :return: object hashed password
+        '''
         return self._hashed_password
 
     def set_password(self, password, salt=''):
+        '''
+        Set user password (used hashed function).
+        :param str password: user password
+        :param str salt: cryptographic salt, default=None
+        '''
         self._hashed_password = hash_password(password, salt)
 
     @hashed_password.setter
     def hashed_password(self, password):
+        '''
+        :param str password: user password
+        :return: user hashed password
+        '''
         self.set_password(password)
 
     def save_to_db(self, cursor):
+        '''
+        Create new user and save it to database or update user's information if user is exist.
+        :param cursor: the cursor class object
+        :return: True if saving was successful, False if not.
+        '''
         if self._id == -1:
             sql = 'INSERT INTO users(username, hashed_password) VALUES(%s, %s) RETURNING id;'
             values = (self.username, self._hashed_password)
@@ -37,6 +92,12 @@ class User:
 
     @staticmethod
     def load_user_by_id(cursor, id_):
+        '''
+        Load user by user ID.
+        :param cursor: the cursor class object
+        :param int id_: user ID
+        :return: class User object if user is exist or None if doesn't.
+        '''
         sql = 'SELECT id, username, hashed_password FROM users WHERE id=%s;'
         cursor.execute(sql, (id_,))
         data = cursor.fetchone()
@@ -51,6 +112,12 @@ class User:
 
     @staticmethod
     def load_user_by_username(cursor, username):
+        '''
+        Load user by user name.
+        :param cursor: the cursor class object
+        :param str username: user name
+        :return: class User object if user is exist or None if doesn't.
+        '''
         sql = 'SELECT id, username, hashed_password FROM users WHERE username=%s;'
         cursor.execute(sql, (username,))
         data = cursor.fetchone()
@@ -65,6 +132,11 @@ class User:
 
     @staticmethod
     def load_all_users(cursor):
+        '''
+        Load all users in database.
+        :param cursor: the cursor class object
+        :return: list of users
+        '''
         sql = "SELECT id, username, hashed_password FROM users;"
         users = []
         cursor.execute(sql)
@@ -78,6 +150,11 @@ class User:
         return users
 
     def delete(self, cursor):
+        '''
+        Delete user from database.
+        :param cursor: the cursor class object
+        :return: True if deleting was successful, False if not.
+        '''
         sql = "DELETE FROM Users WHERE id=%s"
         cursor.execute(sql, (self.id,))
         self._id = -1
@@ -85,7 +162,38 @@ class User:
 
 
 class Message:
+    '''
+        A class used to represent a Message.
+
+        ...
+
+        Attributes
+        ----------
+        _id : int
+           message ID
+        from_id : int
+            user ID who's send the message
+        to_id : int
+            user ID to send the message to
+        text : str
+            message text
+        _creation_date : date
+            date of message creation
+
+
+        Methods
+        -------
+        save_to_db:
+            Save data to database.
+        load_all_messages:
+            Load all user messages in database.
+        '''
     def __init__(self, from_id, to_id, text):
+        '''
+        :param int from_id: user ID who's send the message
+        :param int to_id: user ID to send the message to
+        :param str text: message text
+        '''
         self._id = -1
         self.from_id = from_id
         self.to_id = to_id
@@ -94,13 +202,24 @@ class Message:
 
     @property
     def id(self):
+        '''
+        :return: message ID
+        '''
         return self._id
 
     @property
     def creation_date(self):
+        '''
+        :return: message creation date
+        '''
         return self._creation_date
 
     def save_to_db(self, cursor):
+        '''
+        Creates new message or update it if message exist.
+        :param cursor: the cursor class object
+        :return: True if saving was successful, False if not.
+        '''
         if self._id == -1:
             sql = 'INSERT INTO messages(from_id, to_id, text) VALUES(%s, %s, %s) RETURNING id, creation_date'
             values = (self.from_id, self.to_id, self.text)
@@ -115,6 +234,12 @@ class Message:
 
     @staticmethod
     def load_all_messages(cursor, user_id=None):
+        '''
+        Returns list of all messages of user in database.
+        :param cursor: the cursor class object
+        :param user_id: user ID
+        :return: messages list
+        '''
         if user_id:
             sql = 'SELECT id, from_user, to_user, text, creation_date FROM messages;'
             cursor.execute(sql, (user_id,))

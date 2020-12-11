@@ -17,6 +17,14 @@ args = parser.parse_args()
 
 
 def create_user(cursor, username, password):
+    '''
+    Create user and save it to database.
+    If user exists function returns UniqueViolation error.
+    If user password is shorter than 8 characters function informs about that.
+    :param cursor: the cursor class object
+    :param str username: name of user
+    :param str password: user password
+    '''
     if User.load_user_by_username(cursor, username) is None:
         if len(password) >= 8:
             new_user = User(username, password)
@@ -29,6 +37,14 @@ def create_user(cursor, username, password):
 
 
 def edit_password(cursor, username, password, new_password):
+    '''
+    Change user password to new one and save it in database.
+    If user doesn't exist or new user password is shorter than 8 characters function informs about that.
+    :param cursor:  the cursor class object
+    :param str username: name of user
+    :param str password: user password
+    :param str new_password: new user password to save
+    '''
     user = User.load_user_by_username(cursor, username)
     if user is None:
         print('User does not exist!')
@@ -44,6 +60,13 @@ def edit_password(cursor, username, password, new_password):
 
 
 def delete_user(cursor, username, password):
+    '''
+    Delete all information about user in database.
+    If user doesn't exist or user password doesn't correct function informs about that.
+    :param cursor: the cursor class object
+    :param str username: name of user
+    :param str password: user password
+    '''
     user = User.load_user_by_username(cursor, username)
     if user is None:
         print('User does not exist!')
@@ -55,6 +78,10 @@ def delete_user(cursor, username, password):
 
 
 def users_list(cursor):
+    '''
+    Prints list of all users in database.
+    :param cursor: the cursor class object
+    '''
     users = User.load_all_users(cursor)
     for user in users:
         print(user.username)
