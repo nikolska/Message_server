@@ -97,7 +97,7 @@ class Message:
         return self._id
 
     @property
-    def creation_data(self):
+    def creation_date(self):
         return self._creation_date
 
     def save_to_db(self, cursor):
