@@ -103,7 +103,7 @@ class Message:
 
     def save_to_db(self, cursor):
         if self._id == -1:
-            sql = 'INSERT INTO messages(from_id, to_id, text) VALUES(%s, %s, %s, %s) RETURNING id, creation_date'
+            sql = 'INSERT INTO messages(from_id, to_id, text) VALUES(%s, %s, %s) RETURNING id, creation_date'
             values = (self.from_id, self.to_id, self.text)
             cursor.execute(sql, values)
             self._id, self._creation_date = cursor.fetchone()
@@ -135,3 +135,11 @@ class Message:
 connection = connect(user='postgres', password='poltava1955', host='localhost', database='server_db')
 connection.autocommit = True
 csr = connection.cursor()
+
+# user1 = User('Ann', 'easy_password')
+# print(user1.hashed_password)
+# user1.save_to_db(csr)
+# user2 = User('Ameli', 'my_own_password123')
+# user2.save_to_db(csr)
+# user3 = User('Angelika', 'angelika26')
+# user3.save_to_db(csr)
