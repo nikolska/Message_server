@@ -1,5 +1,6 @@
 import argparse
-from models import User, Message, csr
+from models import User
+from psycopg2 import connect, OperationalError
 from psycopg2.errors import UniqueViolation
 from clcrypto import check_password
 
@@ -16,7 +17,7 @@ args = parser.parse_args()
 
 
 def create_user(cursor, username, password):
-    if User.load_user_by_username(csr, username) is None:
+    if User.load_user_by_username(cursor, username) is None:
         if len(password) >= 8:
             new_user = User(username, password)
             new_user.save_to_db(cursor)
@@ -59,9 +60,20 @@ def users_list(cursor):
         print(user.username)
 
 
-# create_user(csr, 'Billie', 'green_day_ps')
-# create_user(csr, 'Sherlock', 'my+hArd*_paSSw0rd')
-# create_user(csr, 'Harry', 'h_potter')
-# edit_password(csr, 'Ann', 'easy_password', 'new_password*327')
-# delete_user(csr, 'Billie', 'green_day_ps')
-# users_list(csr)
+if __name__ == '__main__':
+    try:
+        with connect(user='postgres', password='poltava1955', host='localhost', database='server_db') as connection:
+            with connection.cursor() as cursor_:
+                connection.autocommit = True
+                if args.username and args.password:
+                    create_user(cursor_, args.username, args.password)
+                elif args.username and args.password and args.edit and args.new_password:
+                    edit_password(cursor_, args.username, args.password, args.new_password)
+                elif args.username and args.password and args.delete:
+                    delete_user(cursor_, args.username, args.password)
+                elif args.list:
+                    users_list(cursor_)
+                else:
+                    parser.print_help()
+    except OperationalError as ex:
+        print('Connection error. Check all data and try again.', ex)
