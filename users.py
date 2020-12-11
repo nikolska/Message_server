@@ -31,43 +31,37 @@ def edit_password(cursor, username, password, new_password):
     user = User.load_user_by_username(cursor, username)
     if user is None:
         print('User does not exist!')
-    else:
-        if check_password(password, user.hashed_password):
-            if len(new_password) >= 8:
-                user.hashed_password = new_password
-                user.save_to_db(cursor)
-                print('Password is changed.')
-            else:
-                print('Password is too short!')
+    elif check_password(password, user.hashed_password):
+        if len(new_password) >= 8:
+            user.hashed_password = new_password
+            user.save_to_db(cursor)
+            print('Password is changed.')
         else:
-            print('Password is not correct!')
+            print('Password is too short!')
+    else:
+        print('Password is not correct!')
+
+
+def delete_user(cursor, username, password):
+    user = User.load_user_by_username(cursor, username)
+    if user is None:
+        print('User does not exist!')
+    elif check_password(password, user.hashed_password):
+        user.delete(cursor)
+        print(f'User {user.username} was deleted.')
+    else:
+        print('Password is not correct!')
+
+
+def users_list(cursor):
+    users = User.load_all_users(cursor)
+    for user in users:
+        print(user.username)
 
 
 # create_user(csr, 'Billie', 'green_day_ps')
 # create_user(csr, 'Sherlock', 'my+hArd*_paSSw0rd')
 # create_user(csr, 'Harry', 'h_potter')
 # edit_password(csr, 'Ann', 'easy_password', 'new_password*327')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# delete_user(csr, 'Billie', 'green_day_ps')
+# users_list(csr)
