@@ -33,7 +33,7 @@ def send_message(cursor, username, password, to_username, text):
             print('Message is sent.')
 
 
-def message_list(cursor, username, password):
+def messages_list(cursor, username, password):
     user = User.load_user_by_username(cursor, username)
     if user is None:
         print('User does not exist!')
@@ -47,3 +47,17 @@ def message_list(cursor, username, password):
             print(f'date: {message.creation_date}')
             print(message.text)
 
+
+if __name__ == '__main__':
+    try:
+        with connect(user='postgres', password='poltava1955', host='localhost', database='server_db') as connection:
+            with connection.cursor() as cursor_:
+                connection.autocommit = True
+                if args.username and args.password and args.to and args.send:
+                    send_message(cursor_, args.username, args.password, args.to, args.send)
+                elif args.username and args.password and args.list:
+                    messages_list(cursor_, args.username, args.password)
+                else:
+                    parser.print_help()
+    except OperationalError as ex:
+        print('Connection error. Check all data and try again.', ex)
