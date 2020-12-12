@@ -241,7 +241,7 @@ class Message:
         :return: messages list
         '''
         if user_id:
-            sql = 'SELECT id, from_user, to_user, text, creation_date FROM messages;'
+            sql = 'SELECT id, from_id, to_id, text, creation_date FROM messages;'
             cursor.execute(sql, (user_id,))
         else:
             sql = "SELECT id, from_id, to_id, text, creation_date FROM messages"

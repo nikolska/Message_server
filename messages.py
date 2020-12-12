@@ -44,7 +44,7 @@ def messages_list(cursor, user):
     list_messages = Message.load_all_messages(cursor, user.id)
     for message in list_messages:
         from_user = User.load_user_by_id(cursor, message.from_id)
-        print(f'from: {from_user}')
+        print(f'from: {from_user.username}')
         print(f'date: {message.creation_date}')
         print(message.text)
 
