@@ -2,6 +2,8 @@
 
 Programs are supposed to take parameters from the command line.
 
+At first you have to run file <b>'create_db.py'</b>. 
+
 <b>Users</b> - adding, modifying non-key information about yourself, deleting your account. The user is to be identified by login (cannot be repeated).
 
 <b>Broadcasting messages</b> - each user can create an unlimited number of messages for any user. The maximum length of an entry is 255 characters.
