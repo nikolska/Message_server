@@ -12,10 +12,6 @@ Programs are supposed to take parameters from the command line.
 
 -u or --username: user login,
 
--p or --password: user's password, check if it is at least eight characters long,
-
--n or --new-pass: new user password,
-
 -l or --list: request to list all users,
 
 -d or --delete: user login to be deleted,
@@ -26,10 +22,10 @@ Programs are supposed to take parameters from the command line.
 
 -u or --username: user login,
 
--p or --password: password for identification,
-
 -l or --list: request to list all messages,
 
 -t or --to: set the username to which we want to send the message,
 
 -s or --send: send the message to the user (message text).
+
+<b>Password and new password - user's password, check if it is at least eight characters long.</b>
